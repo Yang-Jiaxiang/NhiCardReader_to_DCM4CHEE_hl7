@@ -49,7 +49,7 @@ def get_companies():
   return json.dumps(readCard())
 
 if __name__ == '__main__':
-    api.run()
+    api.run(port=5051)
     
 
 #print(("".join(chr(i) for i in data[32:57])).encode("utf-8").decode("utf-8"))
