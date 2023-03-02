@@ -1,6 +1,8 @@
 from smartcard.System import readers
-
+import time
 from flask import Flask, json
+
+import requests
 
 
 def readCard():
@@ -12,7 +14,7 @@ def readCard():
 
         # get all the available readers
         r = readers()
-        print(r)
+        #print(r)
         # print ("Available readers:"+ r)
 
         reader = r[0]
@@ -26,8 +28,7 @@ def readCard():
 
         data, sw1, sw2 = connection.transmit(ReadProfileAPDU)
 
-        name="{}".format(bytes(data[12:32]).decode("big5").rstrip('\x00'))
-
+        name = str.strip(bytes(data[12:18]).decode("big5").rstrip('\x00'))
 
         return {
             "code":200,
@@ -44,22 +45,32 @@ def readCard():
         }
     
 api = Flask(__name__)
-@api.route('/readNHICard', methods=['GET'])
-def get_companies():
-  return json.dumps(readCard())
 
-if __name__ == '__main__':
-    api.run(port=5051)
+url = 'http://localhost:3310/api/smartCard'
+
+alreadyPOST = False
+
+
+
+# while True:
+#     if (str(readCard())[9:12] == '500'):
+#         print("NO")
+#     else:
+#         print('OK')
+
+
+def postToNodeJs():
+       requests.post(url, readCard())
+
+
     
-
-#print(("".join(chr(i) for i in data[32:57])).encode("utf-8").decode("utf-8"))
-
-#print("name: {}".format(bytes(data[12:32]).decode("big5")))
-
-#print ("Command: %02X %02X" % (sw1, sw2))
-#print ( 'Card Number : %s' % ''.join(chr(i) for i in data[0:12]))
-#print ( 'Name : %s' % ''.join(chr(i) for i in data[12:18])) # Big5
-#print ( 'ID Number : %s' % ''.join(chr(i) for i in data[32:42]))
-#print ( 'Birthday : %s' % ''.join(chr(i) for i in data[43:49]))
-#print ( 'Sex : %s' % ''.join(chr(i) for i in data[49:50]))
-#print ( 'Card Date : %s' % ''.join(chr(i) for i in data[51:57]))
+while True:
+    carCode = str(readCard())[9:12]
+    if carCode == "500":
+        print("Card not inserted==========================")
+        alreadyPOST = False
+    if carCode == "200" and alreadyPOST == False:
+        alreadyPOST = True
+        # 放POST
+        print("OK")
+        postToNodeJs()
