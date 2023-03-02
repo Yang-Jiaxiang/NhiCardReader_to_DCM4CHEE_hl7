@@ -4,3 +4,9 @@
 
 # #API
 ＧET：```http://localhost:5051/readNHICard``` 
+
+# pip install 
+```python
+pip install flask pyscard
+```
+
