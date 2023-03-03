@@ -1,7 +1,32 @@
 from smartcard.System import readers
 from flask import Flask
 import requests
+import tkinter as tk
+import json
+
 import script.jsonToHl7
+import dcm4chee.index as dcm4chee
+
+window = tk.Tk()
+window.title('GUI')
+window.geometry('300x400')
+window.resizable(False, False)
+def button_event():
+    status_code=dcm4chee.apiGetWorkList()["status_code"]
+    if status_code==200:
+        connectionStatusLabel['text']="連線成功"
+    else:
+        connectionStatusLabel['text'] = "失敗"
+
+
+
+mybutton = tk.Button(window, text='檢查連線',command=button_event)
+connectionStatusLabel=tk.Label(window,text="ss", bg='green', font=('Arial', 12), width=300, height=2)
+
+connectionStatusLabel.pack()
+mybutton.pack()
+
+window.mainloop()
 
 
 def readCard():
@@ -69,6 +94,7 @@ while True:
         alreadyPOST = False
     if carCode == "200" and alreadyPOST == False:
         alreadyPOST = True
+        print(script.jsonToHl7.jsonToHl7(cardContent))
         # 放POST
-        print("OK")
         postToNodeJs(cardContent)
+        print("OK")
