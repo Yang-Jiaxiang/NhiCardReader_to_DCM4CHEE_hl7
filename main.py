@@ -1,8 +1,7 @@
 from smartcard.System import readers
-import time
-from flask import Flask, json
-
+from flask import Flask
 import requests
+import script.jsonToHl7
 
 
 def readCard():
@@ -50,22 +49,21 @@ url = 'http://localhost:3310/api/smartCard'
 
 alreadyPOST = False
 
-
-
-# while True:
-#     if (str(readCard())[9:12] == '500'):
-#         print("NO")
-#     else:
-#         print('OK')
-
-
-def postToNodeJs():
-       requests.post(url, readCard())
+def postToNodeJs(cardContent):
+    try:
+        postApi = requests.post(url, cardContent)
+        if  postApi.status_code == 200:
+            print("Pasted")
+        else:
+            print("Not Pasted")
+    except requests.exceptions.RequestException as e:
+        print(e)
 
 
     
 while True:
-    carCode = str(readCard())[9:12]
+    cardContent=readCard()
+    carCode = str(cardContent)[9:12]
     if carCode == "500":
         print("Card not inserted==========================")
         alreadyPOST = False
@@ -73,4 +71,4 @@ while True:
         alreadyPOST = True
         # 放POST
         print("OK")
-        postToNodeJs()
+        postToNodeJs(cardContent)
