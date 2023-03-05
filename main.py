@@ -1,100 +1,89 @@
-from smartcard.System import readers
-from flask import Flask
 import requests
 import tkinter as tk
-import json
-
+import script.cardReader
 import script.jsonToHl7
 import dcm4chee.index as dcm4chee
+import json
+
+def checkConnection_button_event():
+    status_code=dcm4chee.apiGetWorkList()["status_code"]
+    if status_code==200:
+        connectionStatusLabel['text']="連線成功"
+        connectionStatusLabel['bg']="green"
+    else:
+        connectionStatusLabel['text'] = "連線失敗"
+
+def readCard_button_event() :
+    #清空cardReadTextBox
+    cardReadTextBox.delete(1.0, 'end')
+    cardContent = script.cardReader.readCard()
+    carCode = str(cardContent)[9:12]
+    if carCode == "500":
+        readCardLabel['text'] = "尚未讀取到卡片"
+        readCardLabel['bg'] = "#ff5757"
+    if carCode =="200":
+        hl7 = script.jsonToHl7.jsonToHl7(cardContent)
+        readCardLabel['text'] = "讀取卡片成功"
+        readCardLabel['bg'] = "green"
+        print(hl7)
+        #顯示結果
+        for k in cardContent:
+            cardReadTextBox.insert(tk.END, '{} = {}\n'.format(k, cardContent[k]))
+
+    # alreadyPOST = False
+    # while True:
+    #     cardContent=script.cardReader.readCard()
+    #     carCode = str(cardContent)[9:12]
+    #     if carCode == "500":
+    #         print("Card not inserted==========================")
+    #         alreadyPOST = False
+    #     if carCode == "200" and alreadyPOST == False:
+    #         alreadyPOST = True
+    #         hl7 = script.jsonToHl7.jsonToHl7(cardContent)
+    #         print(hl7)
 
 window = tk.Tk()
 window.title('GUI')
 window.geometry('300x400')
 window.resizable(False, False)
-def button_event():
-    status_code=dcm4chee.apiGetWorkList()["status_code"]
-    if status_code==200:
-        connectionStatusLabel['text']="連線成功"
-    else:
-        connectionStatusLabel['text'] = "失敗"
 
+#連線狀態顯示
+connectionStatusLabel=tk.Label(window,text="請檢查連線", bg='#ff5757', font=('標楷體', 20))
+connectionStatusLabel.pack(side="top",fill="x")
 
-
-mybutton = tk.Button(window, text='檢查連線',command=button_event)
-connectionStatusLabel=tk.Label(window,text="ss", bg='green', font=('Arial', 12), width=300, height=2)
-
-connectionStatusLabel.pack()
+#檢查連線Button
+mybutton = tk.Button(window, text='檢查連線',command=checkConnection_button_event)
 mybutton.pack()
+
+#讀取卡片狀太顯示
+readCardLabel = tk.Label(window,text="尚未讀取到卡片",bg="#ff5757",font=('標楷體',14))
+readCardLabel.pack(side="top",fill="x")
+
+#讀取卡片
+cardReadbutton = tk.Button(window, text='讀取卡片',command=readCard_button_event)
+cardReadbutton.pack()
+
+cardReadTextBox = tk.Text(window,height=12,width=40)
+cardReadTextBox.pack()
+
+postbutton=tk.Button(window,text="post",command=dcm4chee.apiPostWorkList)
+postbutton.pack()
 
 window.mainloop()
 
 
-def readCard():
-    try:  
-        # define the APDUs used in this script
-        SelectAPDU = [ 0x00, 0xA4, 0x04, 0x00, 0x10, 0xD1, 0x58, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00 ]
-
-        ReadProfileAPDU = [ 0x00, 0xca, 0x11, 0x00, 0x02, 0x00, 0x00 ]
-
-        # get all the available readers
-        r = readers()
-        #print(r)
-        # print ("Available readers:"+ r)
-
-        reader = r[0]
-        # print ("Using:", reader)
-
-        connection = reader.createConnection()
-        connection.connect()
-
-        data, sw1, sw2 = connection.transmit(SelectAPDU)
-        # print ("Select Applet: %02X %02X" % (sw1, sw2))
-
-        data, sw1, sw2 = connection.transmit(ReadProfileAPDU)
-
-        name = str.strip(bytes(data[12:18]).decode("big5").rstrip('\x00'))
-
-        return {
-            "code":200,
-            "id": ("".join(chr(i) for i in data[32:42])).encode("utf-8").decode("utf-8"),
-            "name":name,
-            "birthday": ("".join(chr(i) for i in data[43:49])).encode("utf-8").decode("utf-8"),
-            "sex": ("".join(chr(i) for i in data[49:50])).encode("utf-8").decode("utf-8"),
-            "cardDate": ("".join(chr(i) for i in data[51:57])).encode("utf-8").decode("utf-8")
-        }
-    except: 
-        return {
-            "code":500,
-            "error":"card reader is not working"
-        }
-    
-api = Flask(__name__)
-
-url = 'http://localhost:3310/api/smartCard'
-
-alreadyPOST = False
-
-def postToNodeJs(cardContent):
-    try:
-        postApi = requests.post(url, cardContent)
-        if  postApi.status_code == 200:
-            print("Pasted")
-        else:
-            print("Not Pasted")
-    except requests.exceptions.RequestException as e:
-        print(e)
 
 
-    
-while True:
-    cardContent=readCard()
-    carCode = str(cardContent)[9:12]
-    if carCode == "500":
-        print("Card not inserted==========================")
-        alreadyPOST = False
-    if carCode == "200" and alreadyPOST == False:
-        alreadyPOST = True
-        print(script.jsonToHl7.jsonToHl7(cardContent))
-        # 放POST
-        postToNodeJs(cardContent)
-        print("OK")
+
+#url = 'http://localhost:3310/api/smartCard'
+# def postToNodeJs(cardContent):
+#     try:
+#         postApi = requests.post(url, cardContent)
+#         if  postApi.status_code == 200:
+#             print("Pasted")
+#         else:
+#             print("Not Pasted")
+#     except requests.exceptions.RequestException as e:
+#         print(e)
+
+

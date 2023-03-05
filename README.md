@@ -7,6 +7,6 @@
 
 # pip install 
 ```python
-pip install flask pyscard
+pip install flask pyscard swig requests
 ```
 
