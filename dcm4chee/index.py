@@ -20,8 +20,31 @@ def apiGetWorkList():
         return {"status_code":500}
 
 def apiPostWorkList(hl7_msg):
-    dcm4cheeAPI
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((dcm4cheeAPI, dcm4cheePORT))
     client_socket.sendall(hl7_msg)
+
+    # 讀取 server 回傳的 response
+    response = b''
+    while True:
+        data = client_socket.recv(1024)
+        if not data:
+            break
+        response += data
+
+    # 關閉 socket 連線
     client_socket.close()
+
+    # 將回傳的 response 轉換成字串，並印出來
+    print(response.decode())
+
+    # 處理可能的錯誤
+    try:
+        response_code = int(response.split(b' ')[1])
+        if response_code == 404:
+            print('404 Not Found')
+        elif response_code == 500:
+            print('500 Internal Server Error')
+        # 其他錯誤處理...
+    except Exception as e:
+        print(e)

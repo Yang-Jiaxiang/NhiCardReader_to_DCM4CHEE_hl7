@@ -52,5 +52,12 @@ def jsonToHl7(json_data):
     orc.orc_12.xcn_2 = data['name'][0:1]
     orc.orc_12.xcn_3 = data['name'][1:3]
 
-    hl7 = msh.to_er7()+"\n"+pid.to_er7()+"\n"+orc.to_er7()
+    #參考欄位https://hl7-definition.caristix.com/v2/HL7v2.3.1/Segments/OBR
+    #建立 OBR 段
+    obr = hl7_message.add_segment("OBR")
+    obr.obr_1 = "1"
+    obr.obr_24 = "US"
+
+
+    hl7 = msh.to_er7()+"\n"+pid.to_er7()+"\n"+orc.to_er7()+"\n"+obr.to_er7()
     return hl7
