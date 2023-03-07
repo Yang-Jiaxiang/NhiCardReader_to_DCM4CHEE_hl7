@@ -29,18 +29,7 @@ def readCard_button_event() :
         #顯示結果
         for k in cardContent:
             cardReadTextBox.insert(tk.END, '{} = {}\n'.format(k, cardContent[k]))
-
-    # alreadyPOST = False
-    # while True:
-    #     cardContent=script.cardReader.readCard()
-    #     carCode = str(cardContent)[9:12]
-    #     if carCode == "500":
-    #         print("Card not inserted==========================")
-    #         alreadyPOST = False
-    #     if carCode == "200" and alreadyPOST == False:
-    #         alreadyPOST = True
-    #         hl7 = script.jsonToHl7.jsonToHl7(cardContent)
-    #         print(hl7)
+        dcm4chee.dcm4cheePORT(hl7)
 
 window = tk.Tk()
 window.title('GUI')

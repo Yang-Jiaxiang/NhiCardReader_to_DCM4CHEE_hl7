@@ -1,10 +1,13 @@
 import requests
 import json
 import os
+import socket
 from dotenv import load_dotenv
 
 load_dotenv()
 dcm4cheeAPI=os.getenv("DCM4CHEE_API")
+dcm4cheePORT=os.getenv("PORT")
+
 
 def apiGetWorkList():
     try:
@@ -16,37 +19,9 @@ def apiGetWorkList():
     except requests.exceptions.RequestException as e:
         return {"status_code":500}
 
-def apiPostWorkList():
-    url = "http://dcm4chee.luckypig.net:8080/dcm4chee-arc/aets/WORKLIST/rs/workitems"
-    headers = {'Content-type': 'application/json'}
-    data = {
-        "ScheduledProcedureStepSequence": [
-            {
-                "ScheduledStationAETitle": "DCM4CHEE",
-                "ScheduledProcedureStepStartDate": "20220306",
-                "ScheduledProcedureStepStartTime": "100000",
-                "Modality": "MR",
-                "ScheduledPerformingPhysicianName": {
-                    "Alphabetic": "Doe^John"
-                },
-                "ScheduledProcedureStepDescription": "Brain",
-                "ScheduledProcedureStepID": "SPS_001",
-                "ScheduledProcedureStepLocation": "Room1",
-                "ScheduledStationName": "DCM4CHEE",
-                "ScheduledProcedureStepStatus": "SCHEDULED",
-                "PatientName": {
-                    "Alphabetic": "健保測"
-                },
-                "PatientID": "A123457815",
-                "PatientBirthDate": "19600127",
-                "PatientSex": "M"
-            }
-        ]
-    }
-
-    response = requests.post(url, headers=headers, json=data)
-
-    if response.status_code == 200:
-        print("Work item created successfully.")
-    else:
-        print("Error creating work item:", response.status_code, response.text)
+def apiPostWorkList(hl7_msg):
+    dcm4cheeAPI
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((dcm4cheeAPI, dcm4cheePORT))
+    client_socket.sendall(hl7_msg)
+    client_socket.close()
