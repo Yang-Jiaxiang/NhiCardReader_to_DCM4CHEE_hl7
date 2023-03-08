@@ -1,13 +1,12 @@
 import requests
-import json
+import sys
 import os
 import socket
 from dotenv import load_dotenv
 
 load_dotenv()
 dcm4cheeAPI=os.getenv("DCM4CHEE_API")
-dcm4cheePORT=os.getenv("PORT")
-
+dcm4cheePORT=os.getenv("DCM4CHEE_POST")
 
 def apiGetWorkList():
     try:
@@ -19,32 +18,30 @@ def apiGetWorkList():
     except requests.exceptions.RequestException as e:
         return {"status_code":500}
 
+
 def apiPostWorkList(hl7_msg):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((dcm4cheeAPI, dcm4cheePORT))
-    client_socket.sendall(hl7_msg)
-
-    # 讀取 server 回傳的 response
-    response = b''
-    while True:
-        data = client_socket.recv(1024)
-        if not data:
-            break
-        response += data
-
-    # 關閉 socket 連線
-    client_socket.close()
-
-    # 將回傳的 response 轉換成字串，並印出來
-    print(response.decode())
-
-    # 處理可能的錯誤
+    RECV_BUFFER = 4096
     try:
-        response_code = int(response.split(b' ')[1])
-        if response_code == 404:
-            print('404 Not Found')
-        elif response_code == 500:
-            print('500 Internal Server Error')
-        # 其他錯誤處理...
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((dcm4cheeAPI, int(dcm4cheePORT)))
+            s.send(hl7_msg.encode())
+
+            # 等待dcm4chee回應，並接收回應
+            data = s.recv(RECV_BUFFER)
+
+            # 檢查dcm4chee的回應是否有錯誤訊息
+            if "ERR" in data.decode():
+                # 若dcm4chee的回應包含 "ERR"，則印出錯誤訊息
+                print(f"Error: {data.decode()}")
+            else:
+                # 若dcm4chee的回應不包含 "ERR"，則印出回應訊息
+                print(f"Response: {data.decode()}")
+    except socket.error as e:
+        # 捕捉socket錯誤，並印出錯誤訊息
+        print(f"Socket error: {e}")
+        sys.exit(1)
     except Exception as e:
-        print(e)
+        # 捕捉其他錯誤，並印出錯誤訊息
+        print(f"Error: {e}")
+        sys.exit(1)
+    s.close()

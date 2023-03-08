@@ -22,14 +22,17 @@ def readCard_button_event() :
         readCardLabel['text'] = "尚未讀取到卡片"
         readCardLabel['bg'] = "#ff5757"
     if carCode =="200":
-        hl7 = script.jsonToHl7.jsonToHl7(cardContent)
+        hl7_msg = script.jsonToHl7.jsonToHl7(cardContent)
         readCardLabel['text'] = "讀取卡片成功"
         readCardLabel['bg'] = "green"
-        print(hl7)
+        print(hl7_msg)
         #顯示結果
         for k in cardContent:
             cardReadTextBox.insert(tk.END, '{} = {}\n'.format(k, cardContent[k]))
-        dcm4chee.dcm4cheePORT(hl7)
+        try:
+            dcm4chee.apiPostWorkList(hl7_msg)
+        except Exception as e :
+            print(f"Error occurred:{e}")
 
 window = tk.Tk()
 window.title('GUI')
