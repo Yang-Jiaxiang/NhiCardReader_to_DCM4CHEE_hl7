@@ -24,6 +24,8 @@ OBR|1|||||||||||||||||||||||US
 
 https://drive.google.com/file/d/1UVbRzK9L6xuYpIszsKAZ2sThBERAIB07/view?usp=share_link
 
+![NhiCardReader_To_DCM4CHEE_python-第 4 页 drawio](https://user-images.githubusercontent.com/81738019/224273100-ffef4005-4658-4817-918e-b7f913f3b9c3.png)
+
     
 
 ## 欄位說明
