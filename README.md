@@ -1,4 +1,4 @@
-# NhiCardReader_to_HL7_PythonGUI
+# NhiCardReader_to_DCM4CHEE_PythonGUI
 ## 說明  
 https://beaded-wood-268.notion.site/HL7-v2-3-1-d3680fccba354efb8bb06d3cd1cbf6d4  
 根据HL7标准，ORM_O01消息类型必须包含至少以下几个段：MSH、PID和ORC。此外，具体取决于实际情况和用例，ORM_O01还可能需要包含其他的段和字段。  
