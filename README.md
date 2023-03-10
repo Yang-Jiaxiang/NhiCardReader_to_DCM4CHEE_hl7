@@ -1,15 +1,11 @@
 # NhiCardReader_to_HL7_PythonGUI
 ## 說明  
 https://beaded-wood-268.notion.site/HL7-v2-3-1-d3680fccba354efb8bb06d3cd1cbf6d4  
+根据HL7标准，ORM_O01消息类型必须包含至少以下几个段：MSH、PID和ORC。此外，具体取决于实际情况和用例，ORM_O01还可能需要包含其他的段和字段。  
 1. 透過晶片經融卡機器讀取健保卡卡面資料(無法讀取完整醫令資料)
 2. 透過hl7apy 轉換為hl7 v2 格式
 3. 將hl7 message send 給 DCM4CHEE workitem 做開單
 
-# HL7 v2.3.1 操作
-
-## 說明
-
-根据HL7标准，ORM_O01消息类型必须包含至少以下几个段：MSH、PID和ORC。此外，具体取决于实际情况和用例，ORM_O01还可能需要包含其他的段和字段。
 
 ## 範例
 
@@ -28,18 +24,6 @@ OBR|1|||||||||||||||||||||||US
 
 https://drive.google.com/file/d/1UVbRzK9L6xuYpIszsKAZ2sThBERAIB07/view?usp=share_link
 
-1. Level 1 
-    ![NhiCardReader_To_DCM4CHEE_python-Level 1 drawio](https://user-images.githubusercontent.com/81738019/224271248-fb3587fb-ee4e-454e-baa2-7b4594dab729.png)
-
-    
-    
-2. Level 2
-    
-    
-    
-3. Level 3
-    
-    
     
 
 ## 欄位說明
