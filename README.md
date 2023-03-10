@@ -1,4 +1,4 @@
-# PythonReadCardDllServer
+# NhiCardReader_to_HL7_PythonGUI
 ## 說明  
 https://beaded-wood-268.notion.site/HL7-v2-3-1-d3680fccba354efb8bb06d3cd1cbf6d4  
 1. 透過晶片經融卡機器讀取健保卡卡面資料(無法讀取完整醫令資料)
