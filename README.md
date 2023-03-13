@@ -6,8 +6,20 @@ https://beaded-wood-268.notion.site/HL7-v2-3-1-d3680fccba354efb8bb06d3cd1cbf6d4
 2. 透過hl7apy 轉換為hl7 v2 格式
 3. 將hl7 message send 給 DCM4CHEE workitem 做開單
 
+## 安裝
+### Python版本需大於3.8
+1. 將本專案下載為Zip或git clone到本地端
+2. 在專案根目錄執行以下指令
+```
+pip install -r requirements.txt
+```
+**如果安裝過程遇到問題，請嘗試以 系統管理員權限執行 命令提示字元**
+3. 執行程式
+```
+python main.py
+```
 
-## 範例
+## 產出之HL7 message範例
 
 ```abap
 MSH|^~\&|HMIS|DUHS|PACS|KIWITEAM|20181016115248||OMI^O23^OMI_O23|20181016115248|P|2.5.1||||||UNICODE UTF-8
@@ -16,7 +28,7 @@ ORC|NW|E12594508720230308^^^TW|||SC||||||20230308213110|||E125945087^Yang^Jiaxia
 OBR|1|||||||||||||||||||||||US
 ```
 
-## 驗證
+## HL7格式驗證器
 
 [HL7 Validator (Health Level 7) - Free Online](https://freeonlineformatter.com/hl7-validator/run)
 
@@ -28,7 +40,7 @@ https://drive.google.com/file/d/1UVbRzK9L6xuYpIszsKAZ2sThBERAIB07/view?usp=share
 
     
 
-## 欄位說明
+## HL7欄位說明
 
 - MSH段，包含消息控制信息和元数据，如消息类型、发送者、接收者、日期/时间等等。
     
