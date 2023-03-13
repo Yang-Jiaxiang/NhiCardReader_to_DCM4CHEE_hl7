@@ -1,7 +1,9 @@
 # NhiCardReader_to_DCM4CHEE_PythonGUI
 ## 說明  
+### HL7 詳細筆記
 https://beaded-wood-268.notion.site/HL7-v2-3-1-d3680fccba354efb8bb06d3cd1cbf6d4  
-根据HL7标准，ORM_O01消息类型必须包含至少以下几个段：MSH、PID和ORC。此外，具体取决于实际情况和用例，ORM_O01还可能需要包含其他的段和字段。  
+
+根據HL7標準，ORM_O01消息類型必須包含至少以下幾個段：MSH、PID和ORC。此外，具體取決於實際情況和用例，ORM_O01還可能需要包含其他的段和字段。
 1. 透過晶片經融卡機器讀取健保卡卡面資料(無法讀取完整醫令資料)
 2. 透過hl7apy 轉換為hl7 v2 格式
 3. 將hl7 message send 給 DCM4CHEE workitem 做開單
@@ -10,10 +12,11 @@ https://beaded-wood-268.notion.site/HL7-v2-3-1-d3680fccba354efb8bb06d3cd1cbf6d4
 ### Python版本需大於3.8
 1. 將本專案下載為Zip或git clone到本地端
 2. 在專案根目錄執行以下指令
-```
-pip install -r requirements.txt
-```
-**如果安裝過程遇到問題，請嘗試以 系統管理員權限執行 命令提示字元**
+  ```
+  pip install -r requirements.txt
+  ```
+  **如果安裝過程遇到問題，請嘗試以 系統管理員權限執行 命令提示字元**
+
 3. 執行程式
 ```
 python main.py
@@ -42,15 +45,15 @@ https://drive.google.com/file/d/1UVbRzK9L6xuYpIszsKAZ2sThBERAIB07/view?usp=share
 
 ## HL7欄位說明
 
-- MSH段，包含消息控制信息和元数据，如消息类型、发送者、接收者、日期/时间等等。
+- MSH段，包含消息控制信息和元數據，如消息類型、發送者、接收者、日期/時間等等。
     
     [Caristix HL7-Definition V2](https://hl7-definition.caristix.com/v2/HL7v2.3.1/Segments/MSH)
     
-- PID段，包含患者的识别信息和相关的人口统计学数据。
+- PID段，包含患者的識別信息和相關的人口統計學數據。
     
     [Caristix HL7-Definition V2](https://hl7-definition.caristix.com/v2/HL7v2.3.1/Segments/PID)
     
-- ORC段，包含医嘱或指示的控制信息，如医嘱号码、医嘱状态、医嘱类型等等。
+- ORC段，包含醫囑或指示的控制信息，如醫囑號碼、醫囑狀態、醫囑類型等等。
     
     [Caristix HL7-Definition V2](https://hl7-definition.caristix.com/v2/HL7v2.3.1/Segments/ORC)
 
